@@ -104,6 +104,22 @@ namespace PRTG_Redis_Sensor
                             {
                                 new PRTGResult()
                                 {
+                                    channel = "RDB Changes Since Last Save",
+                                    unit = PRTGUnit.Count,
+                                    value = persistenceInfo.SingleOrDefault(i => i.Key.Equals("rdb_changes_since_last_save")).Value == "ok" ? "1" : "0"
+                                }
+                            },
+                            {
+                                new PRTGResult()
+                                {
+                                    channel = "RDB Last Save Time",
+                                    unit = PRTGUnit.Custom,
+                                    value = persistenceInfo.SingleOrDefault(i => i.Key.Equals("rdb_last_save_time")).Value == "ok" ? "1" : "0"
+                                }
+                            },
+                            {
+                                new PRTGResult()
+                                {
                                     channel = "RDB Last Background Save Status",
                                     unit = PRTGUnit.Count,
                                     ShowChart = 0,
@@ -273,6 +289,30 @@ namespace PRTG_Redis_Sensor
                                     channel = "Keys Expires",
                                     unit = PRTGUnit.Count,
                                     value = SafeGetInt32(() => keyspaceInfo != null ? keyspaceInfo.SingleOrDefault(i => i.Key.Equals("db0")).Value.Split(',').Select(x => x.Split('=')).ToDictionary(x => x[0], x => x[1])["expires"] : "0")
+                                }
+                            },
+                            {
+                                new PRTGResult()
+                                {
+                                    channel = "Instantaneous Input kbps",
+                                    unit = PRTGUnit.BytesBandwidth,
+                                    value = statsInfo.SingleOrDefault(i => i.Key.Equals("instantaneous_input_kbps")).Value
+                                }
+                            },
+                            {
+                                new PRTGResult()
+                                {
+                                    channel = "Instantaneous Output kbps",
+                                    unit = PRTGUnit.BytesBandwidth,
+                                    value = statsInfo.SingleOrDefault(i => i.Key.Equals("instantaneous_output_kbps")).Value
+                                }
+                            },
+                            {
+                                new PRTGResult()
+                                {
+                                    channel = "Hit Rate",
+                                    unit = PRTGUnit.Percent,
+                                    value = statsInfo.SingleOrDefault(i => i.Key.Equals("keyspace_hits")).Value /(statsInfo.SingleOrDefault(i => i.Key.Equals("keyspace_hits")).Value + statsInfo.SingleOrDefault(i => i.Key.Equals("keyspace_misses")).Value)
                                 }
                             },
                             {
